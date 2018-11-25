@@ -1,0 +1,39 @@
+.wrapper {
+    width: 100%;
+    display: grid;
+    grid-column-gap: 2px;
+    grid-row-gap: 2px;
+    grid-template-areas: 
+        ". up ."
+        "left down right";
+    grid-auto-columns: 5em;
+    grid-auto-rows: 3.5em;
+    justify-content: center;
+}
+
+.button {
+    font-size: larger;
+    border: none;
+}
+
+.left {
+    grid-area: left;
+}
+
+.right {
+    grid-area: right;
+}
+
+.up {
+    grid-area: up;
+}
+
+.down {
+    grid-area: down;
+}
+
+.active {
+    background-color: black;
+    color: whitesmoke;
+    border: 1px solid;
+}
