@@ -1,8 +1,13 @@
 #include <Servo.h>
-Servo wheelsServo;
+#include <HCSR04.h>
 
-// Servo : pin 9
-// H bridge: pin 7 & 8
+#define servoPin 9
+#define bridgePinA 7
+#define bridgePinB 8
+#define blinkerPin 6
+
+#define frontSensorTrigPin 4
+#define frontSensorEchoPin 5
 
 enum ServoState {Left = 0, Straight = 1, Right = 2};
 enum EngineState {Forward = 0, Off = 1, Backward = 2};
@@ -13,8 +18,11 @@ ServoState previousServoState;
 EngineState engineState;
 EngineState previousEngineState;
 
-char incomingBuffer[10];
- 
+Servo wheelsServo;
+UltraSonicDistanceSensor frontSensor(frontSensorTrigPin, frontSensorEchoPin);
+
+String inData = "";
+
 void handleServoState() {
   if (servoState == previousServoState) {
     return;  
@@ -50,34 +58,33 @@ void handleEngineState() {
   {
     case Forward:
     {
-      digitalWrite(7, LOW);
-      digitalWrite(8, HIGH);
+      digitalWrite(bridgePinA, LOW);
+      digitalWrite(bridgePinB, HIGH);
       break;  
     }
     case Off:
     {
-      digitalWrite(7, LOW);
-      digitalWrite (8, LOW);
+      digitalWrite(bridgePinA, LOW);
+      digitalWrite (bridgePinB, LOW);
       break;  
     }
      case Backward:
     {
-      digitalWrite(7, HIGH);
-      digitalWrite(8, LOW);
+      digitalWrite(bridgePinA, HIGH);
+      digitalWrite(bridgePinB, LOW);
       break;  
     }
   }
   previousEngineState = engineState;
 }
 
-String inData = "";
 
 void tryGetIncomingData() {
   if (Serial.available() > 0) {  
 
-   digitalWrite(3, HIGH);
+   digitalWrite(6, HIGH);
    delay(500);
-   digitalWrite(3, LOW);
+   digitalWrite(6, LOW);
    delay(500);
     
     while (Serial.available()) {
@@ -113,17 +120,39 @@ void tryGetIncomingData() {
   }
 }
 
+int delayer = 0;
+
+void handleSensorsData() {
+
+  if (delayer < 19999 ) {
+    delayer++;
+    return;
+  }
+  
+  double frontDistance = frontSensor.measureDistanceCm();
+  Serial.println(frontDistance,2);
+
+  delayer = 0;
+}
+
 void setup() {
   Serial.begin(9600);
-  wheelsServo.attach(9);
-  pinMode(7, OUTPUT);
-  pinMode(8, OUTPUT);
-  pinMode(3, OUTPUT);
+  
+  wheelsServo.attach(servoPin);
+  // Engine setup
+  pinMode(bridgePinA, OUTPUT);
+  pinMode(bridgePinB, OUTPUT);
+  //Blinker setup
+  pinMode(blinkerPin, OUTPUT);
+  // Front sensor setup
+  pinMode(frontSensorTrigPin, OUTPUT);
+  pinMode(frontSensorEchoPin, INPUT);
 }
 
 void loop() {  
-  Serial.println(inData);
+  // Serial.println(inData);
   tryGetIncomingData();
   handleServoState();
   handleEngineState();  
+  handleSensorsData();
 }
