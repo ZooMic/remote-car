@@ -4,8 +4,12 @@
   "description": "Backend for the RPi in NodeJS",
   "main": "index.js",
   "scripts": {
+    "start": "node ./index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Marcin Lichota & Tomasz Maj",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "socket.io": "^2.1.1"
+  }
 }
