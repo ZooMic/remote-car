@@ -4,13 +4,14 @@ import Display from '../Display';
 
 import { startListeningForTheObstacles, stopListeningForTheObstacles } from '../../api/obstacles';
 import sendKeyInfo from '../../api/sendKeyInfo';
+import getNewShift from './carLogic/getNewtShift';
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
       keys: { left: false, right: false, up: false, down: false },
-      shifts: [{ x: 0, y: 0 }],
+      shifts: [{ x: 0, y: 0, angle: 1.5707963 }],
       obstacles: [
         { x:  20, y:  30, shift: { x: 0, y: 0 } },
         { x: 100, y:  50, shift: { x: 0, y: 0 } },
@@ -19,7 +20,15 @@ class App extends Component {
       ],
       shiftsLimit: 10,
       obstaclesLimit: 1000,
-      step: 3,
+      car: {
+        maxSpeed: 6,
+        speed: 1,
+        currentSpeed: 0,
+        angleSpeed: 3.14159265359 / 15,
+        maxAngle: 3.14159265359 / 3, // 60^o
+        currentAngle: 0,
+        breakingFactor: 2,
+      },
     }
     this.interval = null;
   }
@@ -36,22 +45,14 @@ class App extends Component {
   componentDidMount() {
     this.interval = setInterval(() => {
       const {
-        keys: { left, right, up, down },
-        step, shifts, shiftsLimit,
+        keys, shifts, shiftsLimit, car,
       } = this.state;
 
       const lastShift = shifts[0];
+      const { x, y, currentSpeed, currentAngle } = getNewShift(lastShift, keys, car);
 
-      let x = lastShift.x, y = lastShift.y;
-      
-      y += up   ? -step : 0;
-      y += down ?  step : 0;
-
-      x += (up || down) && left  ? -step : 0;
-      x += (up || down) && right ?  step : 0;
-
-      const newShifts = [{x, y}, ...shifts.slice(0, shiftsLimit - 1)];
-      this.setState({ shifts: newShifts });
+      const newShifts = [{x, y, angle: currentAngle }, ...shifts.slice(0, shiftsLimit - 1)];
+      this.setState({ shifts: newShifts, car: { ...car, currentSpeed, currentAngle } });
     }, 100);
     startListeningForTheObstacles(this.onObstaclesChange);
   }

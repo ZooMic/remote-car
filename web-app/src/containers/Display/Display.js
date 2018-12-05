@@ -40,20 +40,31 @@ class Display extends Component {
             ctx,
             props: { centers, obstacles },
         } = this;
+        const { width, height } = ctx.canvas;
 
-        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-        
+        ctx.clearRect(0, 0, width, height);
+
         // DRAWING CAR
+
         const lastCenter = centers[0];
-        const shifts = centers.map(({ x, y }) => ({
+        const shifts = centers.map(({ x, y, angle }) => ({
             x: x - lastCenter.x,
             y: y - lastCenter.y,
+            angle,
         }));
 
         const center = {
             x: Math.floor(ctx.canvas.width / 2),
             y: Math.floor(ctx.canvas.height / 2),
         };
+
+
+        ctx.save();
+        ctx.translate(center.x, center.y);
+        ctx.rotate(lastCenter.angle);
+        ctx.fillStyle = "00FF00";
+        ctx.fillRect(center.x - 10, center.y - 20, 20, 40);
+        ctx.restore();
 
         shifts.forEach((s, i) => {
             drawPoint(ctx, {
