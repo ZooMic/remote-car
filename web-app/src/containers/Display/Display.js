@@ -58,19 +58,13 @@ class Display extends Component {
             y: Math.floor(ctx.canvas.height / 2),
         };
 
-        drawCar(ctx, lastCenter.angle);
-
         shifts.forEach((s, i) => {
             drawPoint(ctx, {
                 x: center.x + s.x,
                 y: center.y + s.y,
             }, Math.pow((shifts.length - i) / shifts.length, 3));
         });
-
-        drawPoint(ctx, {
-            x: center.x,
-            y: center.y,
-        }, 1, '#000000', 4);
+        drawCar(ctx, lastCenter.angle);
 
         // DRAWING OBSTACLES
         obstacles.forEach((o) => {

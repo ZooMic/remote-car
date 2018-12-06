@@ -26,6 +26,6 @@ export default function drawCar(ctx, angle) {
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(angle);
-    ctx.drawImage(imgElement, 0, 0, imgSize.width, imgSize.height, x, 0, w, h);
+    ctx.drawImage(imgElement, 0, 0, imgSize.width, imgSize.height, -w / 2, -h / 2, w, h);
     ctx.restore();
 }
