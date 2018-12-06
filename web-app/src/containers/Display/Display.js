@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { canvas } from './Display.module.css';
-import { drawPoint, drawRect } from './helpers';
+import { drawPoint, drawRect, drawCar } from './helpers';
 
 class Display extends Component {
     constructor(props) {
@@ -58,13 +58,7 @@ class Display extends Component {
             y: Math.floor(ctx.canvas.height / 2),
         };
 
-
-        ctx.save();
-        ctx.translate(center.x, center.y);
-        ctx.rotate(lastCenter.angle);
-        ctx.fillStyle = "00FF00";
-        ctx.fillRect(center.x - 10, center.y - 20, 20, 40);
-        ctx.restore();
+        drawCar(ctx, lastCenter.angle);
 
         shifts.forEach((s, i) => {
             drawPoint(ctx, {
