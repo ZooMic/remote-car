@@ -142,11 +142,11 @@ void handleSensorsData() {
   double frontDistance = frontSensor.measureDistanceCm();
   double frontRightDistance = frontRightSensor.measureDistanceCm();
   double frontLeftDistance = frontLeftSensor.measureDistanceCm();
-  Serial.print("F");
+  Serial.print("90:");
   Serial.println(frontDistance,2);
-  Serial.print("FR");
+  Serial.print("50:");
   Serial.println(frontRightDistance,2);
-  Serial.print("FL");
+  Serial.print("130:");
   Serial.println(frontLeftDistance,2);
 
   delayer = 0;

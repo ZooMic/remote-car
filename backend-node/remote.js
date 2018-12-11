@@ -1,30 +1,21 @@
-// FIX CODE BELOW
+const serialPort = require('./serial-port');
+const keymapper = require('./key-mapper');
 
+let port = null;
 const onKeysChanged = (keys) => {
     console.log("KEYS", keys);
-    // TODO - fill with remote logic
+    port.write(keymapper.mapKeys(keys));
 };
 
 let currentSocket = null;
-const emitObstacles = () => {
-    // TODO - fill with on obstacle changed logic
-    // socket.emit('obstacles', [{angle, length}])
-    
-    setInterval(() => { // interval probably to be removed
-        const obstacle1 = { // current handled objects
-            angle: Math.random() * 360,
-            length: Math.random() * 100,
-        };
-        currentSocket.emit('obstacles', [obstacle1]);
-        console.log('EMITED OBSTACLE', [obstacle1]);
-    }, 5000);
+const emitObstacles = (obstacle) => {
+    currentSocket.emit('obstacles', [obstacle]);
 };
-
-// FIX CODE ABOVE
 
 let isObstacleEmiterInit = false;
 const emiterInit = (socket) => {
     currentSocket = socket;
+    port = serialPort.initPort('COM5', emitObstacles);
     if (!isObstacleEmiterInit) {
         isObstacleEmiterInit = true;
         emitObstacles();
