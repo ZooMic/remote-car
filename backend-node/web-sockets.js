@@ -1,5 +1,8 @@
+const remote = require('./remote');
 
 let io = null;
+let sensorsInterval = null;
+
 const initializeSockets = (server) => {
     io = require('socket.io')(server);
 
@@ -8,8 +11,9 @@ const initializeSockets = (server) => {
     io.on('connect', (socket) => {
         console.log('CLIENT CONNECTED');
         socket.on('keys-changed', (data) => {
-            console.log('KEYS', data);
+            remote.onKeysChanged(data);
         });
+        remote.emiterInit(socket);
     });
 }
 

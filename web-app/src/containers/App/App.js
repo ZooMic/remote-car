@@ -5,6 +5,7 @@ import Display from '../Display';
 import { startListeningForTheObstacles, stopListeningForTheObstacles } from '../../api/obstacles';
 import sendKeyInfo from '../../api/sendKeyInfo';
 import getNewShift from './carLogic/getNewtShift';
+import convertNewObstacles from './carLogic/convertNewObstacles';
 
 class App extends Component {
   constructor(props) {
@@ -38,8 +39,14 @@ class App extends Component {
     sendKeyInfo(keys);
   };
 
-  onObstaclesChange = (event) => {
-
+  onObstaclesChange = (newObstacles) => {
+    const { shifts, obstacles, obstaclesLimit } = this.state;
+    this.setState({
+      obstacles: [
+        ...convertNewObstacles(shifts[0], newObstacles),
+        ...obstacles,
+      ].slice(0, obstaclesLimit),
+    });
   }
 
   componentDidMount() {

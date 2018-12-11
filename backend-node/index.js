@@ -7,13 +7,13 @@ const port = 8000;
 const basePath = './public/';
 
 const server = http.createServer(function (request, response) {
-    var filePath = '.' + request.url;
+    let filePath = '.' + request.url;
     if (filePath == './') {
         filePath = 'index.html';
     }
 
-    var extname = path.extname(filePath);
-    var contentType = 'text/html';
+    const extname = path.extname(filePath);
+    let contentType = 'text/html';
     switch (extname) {
         case '.js':
             contentType = 'text/javascript';
@@ -54,7 +54,7 @@ const server = http.createServer(function (request, response) {
             response.end(content, 'utf-8');
         }
     });
-
+    
 });
 
 ws.init(server);
