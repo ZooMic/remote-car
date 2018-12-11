@@ -8,27 +8,35 @@ const initPort = ( portName, obstacleCallback ) => {
         dataBits: 8, 
         parity: 'none', 
         stopBits: 1, 
-        flowControl: false 
+        flowControl: false,
+        autoOpen: false
     }, (err) => {
         console.log('Error: ', err.message);
     });
 
+    port.open((err) => {
+        if (err) {
+          console.log('Error opening port: ', err.message)
+        }
+    })
+
     port.on('open',() => {
         console.log("Serial port opened");
+        setTimeout(() => {
+            const portWithParser = port.pipe(new Delimiter({ delimiter: '|' }));
 
-        const portWithParser = port.pipe(new Delimiter({ delimiter: '\n' }));
-
-        portWithParser.on('data', (dataLine) => {
-            const result = dataLine.split(':');
-            const obstacle = {
-                angle: result[0],
-                distance: result[1]
-            };
-            obstacleCallback(obstacle);
-        });
+            portWithParser.on('data', (dataLine) => {
+                const result = dataLine.toString().split(":");
+                const obstacle = {
+                    angle: result[0],
+                    distance: result[1]
+                };
+                obstacleCallback(obstacle);
+            });
+        },5000);
     });
 
-    return initPort;
+    return port;
 };
 
 module.exports = {

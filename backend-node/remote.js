@@ -9,7 +9,9 @@ const onKeysChanged = (keys) => {
 
 let currentSocket = null;
 const emitObstacles = (obstacle) => {
-    currentSocket.emit('obstacles', [obstacle]);
+    if (obstacle) {
+        currentSocket.emit('obstacles', [obstacle]);
+    }
 };
 
 let isObstacleEmiterInit = false;
