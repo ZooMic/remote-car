@@ -44,19 +44,26 @@ class Display extends Component {
 
         ctx.clearRect(0, 0, width, height);
 
-        // DRAWING CAR
-
+        const center = {
+            x: Math.floor(ctx.canvas.width / 2),
+            y: Math.floor(ctx.canvas.height / 2),
+        };
         const lastCenter = centers[0];
+
+        // DRAWING OBSTACLES
+        obstacles.forEach((o) => {
+            const x = center.x + o.x + (o.shift.x - lastCenter.x);
+            const y = center.x + o.y + (o.shift.y - lastCenter.y);
+            drawRect(ctx, {x, y});
+        });
+
+        // DRAWING CAR
         const shifts = centers.map(({ x, y, angle }) => ({
             x: x - lastCenter.x,
             y: y - lastCenter.y,
             angle,
         }));
 
-        const center = {
-            x: Math.floor(ctx.canvas.width / 2),
-            y: Math.floor(ctx.canvas.height / 2),
-        };
 
         shifts.forEach((s, i) => {
             drawPoint(ctx, {
@@ -65,13 +72,6 @@ class Display extends Component {
             }, Math.pow((shifts.length - i) / shifts.length, 3));
         });
         drawCar(ctx, lastCenter.angle);
-
-        // DRAWING OBSTACLES
-        obstacles.forEach((o) => {
-            const x = center.x + o.x + (o.shift.x - lastCenter.x);
-            const y = center.x + o.y + (o.shift.y - lastCenter.y);
-            drawRect(ctx, {x, y});
-        });
     }
 
     componentDidMount() {

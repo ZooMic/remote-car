@@ -5,7 +5,8 @@ const onKeysChanged = (keys) => {
     // TODO - fill with remote logic
 };
 
-const emitObstacles = (socket) => {
+let currentSocket = null;
+const emitObstacles = () => {
     // TODO - fill with on obstacle changed logic
     // socket.emit('obstacles', [{angle, length}])
     
@@ -14,8 +15,8 @@ const emitObstacles = (socket) => {
             angle: Math.random() * 360,
             length: Math.random() * 100,
         };
-        socket.emit('obstacles', [obstacle1]);
-        console.log('EMITED OBSTACLE', obstacle1);
+        currentSocket.emit('obstacles', [obstacle1]);
+        console.log('EMITED OBSTACLE', [obstacle1]);
     }, 5000);
 };
 
@@ -23,9 +24,10 @@ const emitObstacles = (socket) => {
 
 let isObstacleEmiterInit = false;
 const emiterInit = (socket) => {
+    currentSocket = socket;
     if (!isObstacleEmiterInit) {
         isObstacleEmiterInit = true;
-        emitObstacles(socket);
+        emitObstacles();
     }
 };
 
