@@ -18,7 +18,7 @@ const mapKeys = (keys) => {
     } else {
         steeringString = steeringString.concat('o'); // engine off
     }
-
+    
     return steeringString;
 }
 

@@ -20,7 +20,7 @@ class App extends Component {
         { x: -50, y: -50, shift: { x: 0, y: 0 } },
       ],
       shiftsLimit: 10,
-      obstaclesLimit: 1000,
+      obstaclesLimit: 20,
       car: {
         maxSpeed: 6,
         speed: 1,

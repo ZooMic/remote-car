@@ -15,6 +15,12 @@
 #define frontLeftSensorTrigPin 11
 #define frontLeftSensorEchoPin 10
 
+#define leftSensorTrigPin A0
+#define leftSensorEchoPin A1
+
+#define rightSensorTrigPin A2
+#define rightSensorEchoPin A3
+
 enum ServoState {Left = 0, Straight = 1, Right = 2};
 enum EngineState {Forward = 0, Off = 1, Backward = 2};
 
@@ -28,6 +34,8 @@ Servo wheelsServo;
 UltraSonicDistanceSensor frontSensor(frontSensorTrigPin, frontSensorEchoPin);
 UltraSonicDistanceSensor frontRightSensor(frontRightSensorTrigPin, frontRightSensorEchoPin);
 UltraSonicDistanceSensor frontLeftSensor(frontLeftSensorTrigPin, frontLeftSensorEchoPin);
+UltraSonicDistanceSensor leftSensor(leftSensorTrigPin, leftSensorEchoPin);
+UltraSonicDistanceSensor rightSensor(rightSensorTrigPin, rightSensorEchoPin);
 
 String inData = "";
 
@@ -38,19 +46,19 @@ void handleServoState() {
   
   switch (servoState)
   {
-    case Left:
+    case Right:
     {
-      wheelsServo.write(0);
+      wheelsServo.write(60);
       break;  
     }
     case Straight:
     {
-      wheelsServo.write(90);
+      wheelsServo.write(85);
       break;
     }
-    case Right:
+    case Left:
     {
-      wheelsServo.write(180);
+      wheelsServo.write(105);
       break;
     }
   }
@@ -131,25 +139,39 @@ void tryGetIncomingData() {
 }
 
 int delayer = 0;
+int delayer2 = 0;
 
 void handleSensorsData() {
 
   if (delayer < 29999 ) {
-    delayer++;
+    ++delayer;
+    return;
+  }
+
+  if (delayer2 < 29999 ) {
+    ++delayer2;
     return;
   }
   
   double frontDistance = frontSensor.measureDistanceCm();
   double frontRightDistance = frontRightSensor.measureDistanceCm();
   double frontLeftDistance = frontLeftSensor.measureDistanceCm();
+  double leftDistance = leftSensor.measureDistanceCm();
+  double rightDistance = rightSensor.measureDistanceCm();
+  
   Serial.print("|90:");
   Serial.print((int)frontDistance);
   Serial.print("|50:");
   Serial.print((int)frontRightDistance);
   Serial.print("|130:");
   Serial.print((int)frontLeftDistance);
+  Serial.print("|180:");
+  Serial.print((int)leftDistance);
+  Serial.print("|0:");
+  Serial.print((int)rightDistance);
 
   delayer = 0;
+  delayer2 = 0;
 }
 
 void setup() {
@@ -170,6 +192,12 @@ void setup() {
   // Left front sensor setup
   pinMode(frontLeftSensorTrigPin, OUTPUT);
   pinMode(frontLeftSensorEchoPin, INPUT);
+  // Left sensor setup
+  pinMode(leftSensorTrigPin, OUTPUT);
+  pinMode(leftSensorEchoPin, INPUT);
+  // Right sensor setup
+  pinMode(rightSensorTrigPin, OUTPUT);
+  pinMode(rightSensorEchoPin, INPUT);
 }
 
 void loop() {  
