@@ -1,0 +1,20 @@
+.wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000000cc;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.img {
+    width: 50%;
+    margin: 25% 0px 20px 0px;
+}
+
+.text {
+    font-size: 26px;
+}

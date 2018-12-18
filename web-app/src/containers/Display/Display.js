@@ -41,7 +41,7 @@ class Display extends Component {
             props: { centers, sensors },
         } = this;
         const { width, height } = ctx.canvas;
-        // console.log(sensors);
+
         ctx.clearRect(0, 0, width, height);
 
         const center = {
