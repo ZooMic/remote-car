@@ -5,7 +5,6 @@ import Display from '../Display';
 import { startListeningForTheObstacles, stopListeningForTheObstacles } from '../../api/obstacles';
 import sendKeyInfo from '../../api/sendKeyInfo';
 import getNewShift from './carLogic/getNewtShift';
-import convertNewObstacles from './carLogic/convertNewObstacles';
 
 class App extends Component {
   constructor(props) {
@@ -13,12 +12,13 @@ class App extends Component {
     this.state = {
       keys: { left: false, right: false, up: false, down: false },
       shifts: [{ x: 0, y: 0, angle: 1.5707963 }],
-      obstacles: [
-        { x:  20, y:  30, shift: { x: 0, y: 0 } },
-        { x: 100, y:  50, shift: { x: 0, y: 0 } },
-        { x: -18, y:  30, shift: { x: 0, y: 0 } },
-        { x: -50, y: -50, shift: { x: 0, y: 0 } },
-      ],
+      sensors: {
+        leftMiddle: 300,
+        leftFront: 240,
+        front: 128,
+        rightFront: 60,
+        rightMiddle: 0,
+      },
       shiftsLimit: 10,
       obstaclesLimit: 20,
       car: {
@@ -39,13 +39,9 @@ class App extends Component {
     sendKeyInfo(keys);
   };
 
-  onObstaclesChange = (newObstacles) => {
-    const { shifts, obstacles, obstaclesLimit } = this.state;
+  onObstaclesChange = (sensors) => {
     this.setState({
-      obstacles: [
-        ...convertNewObstacles(shifts[0], newObstacles),
-        ...obstacles,
-      ].slice(0, obstaclesLimit),
+      sensors,
     });
   }
 
@@ -67,11 +63,11 @@ class App extends Component {
   render() {
     const {
       onArrowsChanged,
-      state: { keys, shifts, obstacles },
+      state: { keys, shifts, sensors },
     } = this;
     return (
       <Fragment>
-        <Display centers={shifts} obstacles={obstacles} />
+        <Display centers={shifts} sensors={sensors} />
         <ArrowKeys keys={keys} onChange={onArrowsChanged} />
       </Fragment>
     );

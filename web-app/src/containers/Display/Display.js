@@ -38,10 +38,10 @@ class Display extends Component {
     drawCurrent = () => {
         const {
             ctx,
-            props: { centers, obstacles },
+            props: { centers, sensors },
         } = this;
         const { width, height } = ctx.canvas;
-
+        console.log(sensors);
         ctx.clearRect(0, 0, width, height);
 
         const center = {
@@ -49,13 +49,6 @@ class Display extends Component {
             y: Math.floor(ctx.canvas.height / 2),
         };
         const lastCenter = centers[0];
-
-        // DRAWING OBSTACLES
-        obstacles.forEach((o) => {
-            const x = center.x + o.x + (o.shift.x - lastCenter.x);
-            const y = center.x + o.y + (o.shift.y - lastCenter.y);
-            drawRect(ctx, {x, y});
-        });
 
         // DRAWING CAR
         const shifts = centers.map(({ x, y, angle }) => ({
@@ -71,7 +64,7 @@ class Display extends Component {
                 y: center.y + s.y,
             }, Math.pow((shifts.length - i) / shifts.length, 3));
         });
-        drawCar(ctx, lastCenter.angle);
+        drawCar(ctx, lastCenter.angle, sensors);
     }
 
     componentDidMount() {
