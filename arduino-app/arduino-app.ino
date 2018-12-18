@@ -4,13 +4,14 @@
 #define servoPin 9
 #define bridgePinA 7
 #define bridgePinB 8
+#define bridgeSpeedPin 3
 #define blinkerPin 6
 
 #define frontSensorTrigPin 5
 #define frontSensorEchoPin 4
 
-#define frontRightSensorTrigPin 3
-#define frontRightSensorEchoPin 2
+#define frontRightSensorTrigPin A4
+#define frontRightSensorEchoPin A5
 
 #define frontLeftSensorTrigPin 11
 #define frontLeftSensorEchoPin 10
@@ -65,33 +66,39 @@ void handleServoState() {
   previousServoState = servoState;
 }
 
+int delayer2 = 0;
+
 void handleEngineState() {
- if (engineState == previousEngineState) {
-    return;  
-  }
+
+delay(50);
+
   
   switch (engineState)
   {
     case Forward:
-    {
+    {  
+      analogWrite(bridgeSpeedPin, 190);
       digitalWrite(bridgePinA, LOW);
       digitalWrite(bridgePinB, HIGH);
       break;  
     }
     case Off:
-    {
+    { 
+      analogWrite(bridgeSpeedPin, 0);
       digitalWrite(bridgePinA, LOW);
       digitalWrite (bridgePinB, LOW);
       break;  
     }
      case Backward:
-    {
+    {           
+      analogWrite(bridgeSpeedPin, 190);
       digitalWrite(bridgePinA, HIGH);
       digitalWrite(bridgePinB, LOW);
       break;  
     }
   }
   previousEngineState = engineState;
+  delayer2=0;
 }
 
 
@@ -102,10 +109,7 @@ void tryGetIncomingData() {
   }
 
    digitalWrite(6, HIGH);
-   delay(500);
-   digitalWrite(6, LOW);
-   delay(500);
-    
+      
     while (Serial.available()) {
     char inChar = (char)Serial.read();     
     inData += inChar; 
@@ -134,53 +138,47 @@ void tryGetIncomingData() {
      if (inData.charAt(1) == 'o') {
       engineState = Off;
     } 
+   
+    digitalWrite(6, LOW);
         
    inData ="";  
-}
+} 
 
 int delayer = 0;
-int delayer2 = 0;
+int delayer3 = 0;
 
 void handleSensorsData() {
 
-  if (delayer < 29999 ) {
-    ++delayer;
-    return;
-  }
-
-  if (delayer2 < 29999 ) {
-    ++delayer2;
-    return;
-  }
-  
   double frontDistance = frontSensor.measureDistanceCm();
   double frontRightDistance = frontRightSensor.measureDistanceCm();
   double frontLeftDistance = frontLeftSensor.measureDistanceCm();
   double leftDistance = leftSensor.measureDistanceCm();
   double rightDistance = rightSensor.measureDistanceCm();
   
-  Serial.print("|90:");
+  Serial.print("|");
   Serial.print((int)frontDistance);
-  Serial.print("|50:");
+  Serial.print(":");
   Serial.print((int)frontRightDistance);
-  Serial.print("|130:");
+  Serial.print(":");
   Serial.print((int)frontLeftDistance);
-  Serial.print("|180:");
+  Serial.print(":");
   Serial.print((int)leftDistance);
-  Serial.print("|0:");
+  Serial.print(":");
   Serial.print((int)rightDistance);
 
   delayer = 0;
-  delayer2 = 0;
+  delayer3 = 0;
 }
 
 void setup() {
   Serial.begin(9600);
   // Servo setup
   wheelsServo.attach(servoPin);
+  engineState = Off;
   // Engine setup
   pinMode(bridgePinA, OUTPUT);
   pinMode(bridgePinB, OUTPUT);
+  pinMode(bridgeSpeedPin, OUTPUT);
   //Blinker setup
   pinMode(blinkerPin, OUTPUT);
   // Front sensor setup
@@ -201,9 +199,10 @@ void setup() {
 }
 
 void loop() {  
-  // Serial.println(inData);
+  // Serial.println(inData);  
+  handleEngineState();
   tryGetIncomingData();
-  handleServoState();
-  handleEngineState();  
+  handleServoState();  
   handleSensorsData();
+
 }

@@ -40,6 +40,7 @@ class App extends Component {
   };
 
   onObstaclesChange = (sensors) => {
+    console.log(sensors);
     this.setState({
       sensors,
     });

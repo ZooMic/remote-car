@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { canvas } from './Display.module.css';
-import { drawPoint, drawRect, drawCar } from './helpers';
+import { drawPoint, drawCar } from './helpers';
 
 class Display extends Component {
     constructor(props) {
@@ -41,7 +41,7 @@ class Display extends Component {
             props: { centers, sensors },
         } = this;
         const { width, height } = ctx.canvas;
-        console.log(sensors);
+        // console.log(sensors);
         ctx.clearRect(0, 0, width, height);
 
         const center = {

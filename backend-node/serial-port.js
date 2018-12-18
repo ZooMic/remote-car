@@ -25,13 +25,19 @@ const initPort = ( portName, obstacleCallback ) => {
         setTimeout(() => {
             const portWithParser = port.pipe(new Delimiter({ delimiter: '|' }));
 
-            portWithParser.on('data', (dataLine) => {
+            portWithParser.on('data', (dataLine) => {                
+                console.log(dataLine.toString());
                 const result = dataLine.toString().split(":");
+              
                 const obstacle = {
-                    angle: result[0],
-                    distance: result[1]
+                    front: result[0],
+                    rightFront: result[1],
+                    leftFront: result[2],
+                    leftMiddle: result[3],
+                    rightMiddle: result[4],
                 };
                 obstacleCallback(obstacle);
+            
             });
         },5000);
     });

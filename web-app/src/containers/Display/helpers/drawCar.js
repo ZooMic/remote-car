@@ -79,7 +79,7 @@ const drawSensors = (ctx, sensors) => {
     ctx.lineTo(100, 60);
     ctx.fillStyle = getColor(sensors.rightMiddle);;
     ctx.fill();
-    console.log(sensors);
+    //console.log(sensors);
 }
 
 export default function drawCar(ctx, angle, sensors) {
